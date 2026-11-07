@@ -12,5 +12,5 @@ Avvisi:
 - **LANCIO SNx: scambi aperti** (urgente): prezzo, pool, link a Taostats e Taosis.
 - Un avviso giornaliero silenzioso di funzionamento.
 
-Giro ogni 5 minuti; quando una subnet è pronta, ogni giro controlla ogni 20 s per ~9 minuti.
+Giro dal calendario (ogni 5 minuti in teoria, spesso meno). Quando una subnet è pronta, ogni giro controlla ogni 20 s per ~9 minuti e lancia subito il successivo: copertura continua finché gli scambi non aprono.
 Canale ntfy: segreto `NTFY_TOPIC`. Stato in cache di Actions. Avvio a mano con "prova" = notifica di test.

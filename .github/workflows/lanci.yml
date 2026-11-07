@@ -1,7 +1,7 @@
 name: lanci-subnet
 on:
   schedule:
-    - cron: "*/5 * * * *"    # ogni 5 minuti (il minimo di GitHub); repo pubblico = minuti Actions gratuiti e illimitati
+    - cron: "*/5 * * * *"    # ogni 5 minuti in teoria, in pratica GitHub ne salta molti; repo pubblico = minuti gratuiti
     - cron: "41 4 * * 1"     # ogni lunedì: tiene vivo il calendario (GitHub lo spegne dopo 60 giorni senza attività)
   workflow_dispatch:
     inputs:
@@ -28,6 +28,7 @@ jobs:
           key: lanci-${{ github.run_id }}
           restore-keys: lanci-
       - name: Controllo lanci sulla catena (solo lettura)
+        id: controllo
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC || vars.NTFY_TOPIC }}
           PROVA: ${{ inputs.prova }}
@@ -43,6 +44,11 @@ jobs:
         with:
           path: stato_lanci.json
           key: lanci-${{ github.run_id }}
+      - name: Giro successivo subito (solo se una subnet può aprire a momenti)
+        if: steps.controllo.outputs.catena == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run lanci.yml -R "${{ github.repository }}" --ref main
       - name: Mantieni attivo il calendario
         if: github.event.schedule == '41 4 * * 1'
         env:

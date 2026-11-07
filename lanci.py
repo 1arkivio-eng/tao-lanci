@@ -205,6 +205,10 @@ def main():
             break
         time.sleep(passo)
 
+    # subnet ancora in finestra: il workflow lancia subito il giro successivo (il calendario GitHub salta molti giri)
+    if finestra and os.environ.get("GITHUB_OUTPUT"):
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            f.write("catena=1\n")
     if os.environ.get("PROVA") == "true":  # avvio a mano con "prova": simula il lancio della subnet aperta più di recente
         k = max((k for k in reg if k in aperte and k != "0"), key=lambda k: reg[k])
         nome, simbolo, prezzo, pool = dettagli(d, int(k))
