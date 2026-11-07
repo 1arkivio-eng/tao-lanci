@@ -29,13 +29,13 @@ jobs:
           restore-keys: lanci-
       - name: Controllo lanci sulla catena (solo lettura)
         env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC || vars.NTFY_TOPIC }}
           PROVA: ${{ inputs.prova }}
           TZ: Europe/Rome
           DURATA_MAX: "540"   # se una subnet può aprire a momenti: controllo ogni 20 s per ~9 minuti, poi passa al giro dopo
           PASSO: "20"
         run: |
-          if [ -z "$NTFY_TOPIC" ]; then echo "Manca il segreto NTFY_TOPIC"; exit 1; fi
+          if [ -z "$NTFY_TOPIC" ]; then echo "Manca NTFY_TOPIC (segreto o variabile)"; exit 1; fi
           python3 lanci.py
       - name: Salva stato
         if: always()
